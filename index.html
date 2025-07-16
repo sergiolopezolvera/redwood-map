@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Redwood Forest Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <style>
+    body { margin: 0; padding: 0; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    #menu {
+      position: absolute;
+      background: white;
+      padding: 10px;
+      font-family: sans-serif;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+
+<div id="menu">
+  <h2>Layers</h2>
+  <h3>Forestry</h3>
+  <label><input type="checkbox" id="streams" checked> Streams</label><br>
+  <label><input type="checkbox" id="forestry-roads" checked> Roads</label><br>
+  <label><input type="checkbox" id="gates" checked> Gates</label><br>
+  <label><input type="checkbox" id="springs-wetareas" checked> Springs Wet Areas</label><br>
+  <label><input type="checkbox" id="usal-ownership" checked> USAL Ownership</label><br>
+  <h3>Biological Resources</h3>
+  <label><input type="checkbox" id="coho-distribution" checked> Coho Distribution</label><br>
+  <label><input type="checkbox" id="fishbarriers" checked> Fishbarriers</label><br>
+  <label><input type="checkbox" id="coho-range" checked> Coho Range</label><br>
+  <label><input type="checkbox" id="wildlife-trees" checked> Wildlife Trees</label><br>
+  <h3>California Data</h3>
+  <label><input type="checkbox" id="calidata-adjacentland" checked> Adjacent Land</label><br>
+  <label><input type="checkbox" id="calidata-buildings" checked> Buildings</label><br>
+  <label><input type="checkbox" id="calidata-ca-cities" checked> Cities</label><br>
+  <label><input type="checkbox" id="calidata-ca-counties" checked> Counties</label><br>
+  <label><input type="checkbox" id="calidata-quad-index" checked> Quad Index</label><br>
+  <label><input type="checkbox" id="calidata-mileposts" checked> Mileposts</label><br>
+  <label><input type="checkbox" id="calidata-calwater-northcoast" checked> Calwater North Coast</label><br>
+  <label><input type="checkbox" id="calidata-contour" checked> Contour</label><br>
+  <label><input type="checkbox" id="calidata-landmarks" checked> Landmarks</label><br>
+  <label><input type="checkbox" id="calidata-mendo-parcels" checked> Mendo Parcels</label><br>
+  <label><input type="checkbox" id="calidata-mendocino-county" checked> Mendocino County</label><br>
+  <label><input type="checkbox" id="calidata-misc-polygons" checked> Miscelaneous Polygons</label><br>
+  <label><input type="checkbox" id="calidata-powerlines" checked> Powerlines</label><br>
+  <label><input type="checkbox" id="calidata-roads-statehwys" checked> State Highways</label><br>
+  <label><input type="checkbox" id="calidata-roads-ushwys" checked> US Highways</label><br>
+  <label><input type="checkbox" id="calidata-sections" checked> Sections</label><br>
+  <label><input type="checkbox" id="calidata-townships" checked> Townships</label><br>
+
+  <!-- Agrega más checkboxes según tus capas -->
+</div>
+
+<div id="map"></div>
+
+<script>
+  mapboxgl.accessToken = 'pk.eyJ1Ijoic2VyZ2lvbG9wZXpvbHZlcmEiLCJhIjoiY204Zmo5Zzd1MGRpZjJycHRzZHN5ZGc3ayJ9.esifwjfApSf4t0qkh-bZpg';
+
+  const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/sergiolopezolvera/cmd50otbk01xc01s49so9d88e',
+    center: [-123.8, 39.9], // Ajusta al centro de tu región
+    zoom: 10.5
+  });
+
+  map.on('load', () => {
+    console.log('Mapa cargado con éxito');
+
+    // Supongamos que estas capas están en tu estilo
+    const toggleableLayers = [
+      { id: 'streams', layerId: 'streams' },
+      { id: 'forestry-roads', layerId: 'forestry-roads' },
+      { id: 'gates', layerId: 'gates' },
+      { id: 'springs-wetareas', layerId: 'springs-wetareas' },
+      { id: 'usal-ownership', layerId: 'usal-ownership' },
+      { id: 'coho-distribution', layerId: 'coho-distribution' },
+      { id: 'fishbarriers', layerId: 'fishbarriers' },
+      { id: 'coho-range', layerId: 'coho-range' },
+      { id: 'wildlife-trees', layerId: 'wildlife-trees' },
+      { id: 'calidata-adjacentland', layerId: 'calidata-adjacentland' },
+      { id: 'calidata-buildings', layerId: 'calidata-buildings' },
+      { id: 'calidata-ca-cities', layerId: 'calidata-ca-cities' },
+      { id: 'calidata-ca-counties', layerId: 'calidata-ca-counties' },
+      { id: 'calidata-quad-index', layerId: 'calidata-quad-index' },
+      { id: 'calidata-mileposts', layerId: 'calidata-mileposts' },
+      { id: 'calidata-calwater-northcoast', layerId: 'calidata-calwater-northcoast' },
+      { id: 'calidata-contour', layerId: 'calidata-contour' },
+      { id: 'calidata-landmarks', layerId: 'calidata-landmarks' },
+      { id: 'calidata-mendo-parcels', layerId: 'calidata-mendo-parcels' },
+      { id: 'calidata-mendocino-county', layerId: 'calidata-mendocino-county' },
+      { id: 'calidata-misc-polygons', layerId: 'calidata-misc-polygons' },
+      { id: 'calidata-powerlines', layerId: 'calidata-powerlines' },
+      { id: 'calidata-roads-statehwys', layerId: 'calidata-roads-statehwys' },
+      { id: 'calidata-roads-ushwys', layerId: 'calidata-roads-ushwys' },
+      { id: 'calidata-sections', layerId: 'calidata-sections' },
+      { id: 'calidata-townships', layerId: 'calidata-townships' },
+    ];
+
+    toggleableLayers.forEach(({ id, layerId }) => {
+      const checkbox = document.getElementById(id);
+      checkbox.addEventListener('change', (e) => {
+        const visibility = e.target.checked ? 'visible' : 'none';
+        map.setLayoutProperty(layerId, 'visibility', visibility);
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
