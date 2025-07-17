@@ -15,6 +15,8 @@
       padding: 10px;
       font-family: sans-serif;
       z-index: 1;
+      font-size: 12px;
+      line-height: 1.2;
     }
   </style>
 </head>
@@ -23,54 +25,289 @@
 <div id="menu">
   <h2>Layers</h2>
   <h3>Forestry</h3>
-  <label><input type="checkbox" id="streams" checked> Streams</label><br>
-  <label><input type="checkbox" id="forestry-roads" checked> Roads</label><br>
-  <label><input type="checkbox" id="gates" checked> Gates</label><br>
-  <label><input type="checkbox" id="springs-wetareas" checked> Springs Wet Areas</label><br>
+  <label><input type="checkbox" id="streams" > Streams</label><br>
+  <label><input type="checkbox" id="forestry-roads" > Roads</label><br>
+  <label><input type="checkbox" id="gates" > Gates</label><br>
+  <label><input type="checkbox" id="springs-wetareas" > Springs Wet Areas</label><br>
   <label><input type="checkbox" id="usal-ownership" checked> USAL Ownership</label><br>
   <h3>Biological Resources</h3>
-  <label><input type="checkbox" id="coho-distribution" checked> Coho Distribution</label><br>
-  <label><input type="checkbox" id="fishbarriers" checked> Fishbarriers</label><br>
-  <label><input type="checkbox" id="coho-range" checked> Coho Range</label><br>
-  <label><input type="checkbox" id="wildlife-trees" checked> Wildlife Trees</label><br>
+  <label><input type="checkbox" id="coho-distribution" > Coho Distribution</label><br>
+  <label><input type="checkbox" id="fishbarriers" > Fishbarriers</label><br>
+  <label><input type="checkbox" id="coho-range" > Coho Range</label><br>
+  <label><input type="checkbox" id="wildlife-trees" > Wildlife Trees</label><br>
   <h3>California Data</h3>
-  <label><input type="checkbox" id="calidata-adjacentland" checked> Adjacent Land</label><br>
-  <label><input type="checkbox" id="calidata-buildings" checked> Buildings</label><br>
-  <label><input type="checkbox" id="calidata-ca-cities" checked> Cities</label><br>
-  <label><input type="checkbox" id="calidata-ca-counties" checked> Counties</label><br>
-  <label><input type="checkbox" id="calidata-quad-index" checked> Quad Index</label><br>
-  <label><input type="checkbox" id="calidata-mileposts" checked> Mileposts</label><br>
-  <label><input type="checkbox" id="calidata-calwater-northcoast" checked> Calwater North Coast</label><br>
-  <label><input type="checkbox" id="calidata-contour" checked> Contour</label><br>
-  <label><input type="checkbox" id="calidata-landmarks" checked> Landmarks</label><br>
-  <label><input type="checkbox" id="calidata-mendo-parcels" checked> Mendo Parcels</label><br>
-  <label><input type="checkbox" id="calidata-mendocino-county" checked> Mendocino County</label><br>
-  <label><input type="checkbox" id="calidata-misc-polygons" checked> Miscelaneous Polygons</label><br>
-  <label><input type="checkbox" id="calidata-powerlines" checked> Powerlines</label><br>
-  <label><input type="checkbox" id="calidata-roads-statehwys" checked> State Highways</label><br>
-  <label><input type="checkbox" id="calidata-roads-ushwys" checked> US Highways</label><br>
-  <label><input type="checkbox" id="calidata-sections" checked> Sections</label><br>
-  <label><input type="checkbox" id="calidata-townships" checked> Townships</label><br>
+  <label><input type="checkbox" id="calidata-adjacentland" > Adjacent Land</label><br>
+  <label><input type="checkbox" id="calidata-buildings" > Buildings</label><br>
+  <label><input type="checkbox" id="calidata-ca-cities" > Cities</label><br>
+  <label><input type="checkbox" id="calidata-ca-counties" > Counties</label><br>
+  <label><input type="checkbox" id="calidata-quad-index" > Quad Index</label><br>
+  <label><input type="checkbox" id="calidata-mileposts" > Mileposts</label><br>
+  <label><input type="checkbox" id="calidata-calwater-northcoast" > Calwater North Coast</label><br>
+  <label><input type="checkbox" id="calidata-contour" > Contour</label><br>
+  <label><input type="checkbox" id="calidata-landmarks" > Landmarks</label><br>
+  <label><input type="checkbox" id="calidata-mendo-parcels" > Mendo Parcels</label><br>
+  <label><input type="checkbox" id="calidata-mendocino-county" > Mendocino County</label><br>
+  <label><input type="checkbox" id="calidata-misc-polygons" > Miscelaneous Polygons</label><br>
+  <label><input type="checkbox" id="calidata-powerlines" > Powerlines</label><br>
+  <label><input type="checkbox" id="calidata-roads-statehwys" > State Highways</label><br>
+  <label><input type="checkbox" id="calidata-roads-ushwys" > US Highways</label><br>
+  <label><input type="checkbox" id="calidata-sections" > Sections</label><br>
+  <label><input type="checkbox" id="calidata-townships" > Townships</label><br>
+  <h3>Grids</h3>
+  <label><input type="checkbox" id="grid-fill-1000" checked> 1,000 acres</label><br>
+  <label><input type="checkbox" id="grid-fill-1" > 1 acre</label><br>
 
   <!-- Agrega más checkboxes según tus capas -->
 </div>
 
 <div id="map"></div>
 
+// Cargar Turf.js para operaciones geoespaciales
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+
 <script>
   mapboxgl.accessToken = 'pk.eyJ1Ijoic2VyZ2lvbG9wZXpvbHZlcmEiLCJhIjoiY204Zmo5Zzd1MGRpZjJycHRzZHN5ZGc3ayJ9.esifwjfApSf4t0qkh-bZpg';
-
+  
   const map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/sergiolopezolvera/cmd50otbk01xc01s49so9d88e',
-    center: [-123.8, 39.9], // Ajusta al centro de tu región
+    center: [-123.8, 39.9],
     zoom: 10.5
   });
-
+  
   map.on('load', () => {
-    console.log('Mapa cargado con éxito');
+    console.log('🗺️ Mapa cargado con éxito');
+  
+    // Agregar fuente GeoJSON para la cuadrícula de 1,000 acres
+    map.addSource('grid-1000', {
+      type: 'geojson',
+      data: 'data/Grid_1000acre_overlay_4326_info.geojson',
+      generateId: true
+    });
+  
+    // Verificar que el archivo esté correctamente cargado
+    fetch('data/Grid_1000acre_overlay_4326_info.geojson')
+      .then(res => res.json())
+      .then(data => {
+        console.log("🔍 GeoJSON cargado con", data.features.length, "features.");
+      })
+      .catch(err => console.error("🚨 Error cargando el GeoJSON:", err));
+  
+    // Capa de relleno 1,000 acres
+    map.addLayer({
+      id: 'grid-fill-1000',
+      type: 'fill',
+      source: 'grid-1000',
+      paint: {
+        'fill-color': '#088',
+        'fill-opacity': 0.2,
+      }
+    });
+  
+    // Capa de contorno 1,000 acres
+    map.addLayer({
+      id: 'grid-outline-1000',
+      type: 'line',
+      source: 'grid-1000',
+      paint: {
+        'line-color': '#088',
+        'line-width': 1
+      }
+    });
 
-    // Supongamos que estas capas están en tu estilo
+    let hoveredCellId1000 = null;
+
+// Actualiza la capa de relleno para usar feature-state en hover 1,000 acres
+map.setPaintProperty('grid-fill-1000', 'fill-color', [
+  'case',
+  ['boolean', ['feature-state', 'hover'], false],
+  '#ffa500', // color cuando se hace hover
+  '#088'      // color por defecto
+]);
+
+// Detecta cuando se pasa el mouse sobre una celda
+map.on('mousemove', 'grid-fill-1000', (e) => {
+  if (e.features.length > 0) {
+    console.log("🖱️ Hover sobre feature id:", e.features[0].id);
+    if (hoveredCellId1000 !== null) {
+      map.setFeatureState(
+        { source: 'grid-1000', id: hoveredCellId1000 },
+        { hover: false }
+      );
+    }
+    hoveredCellId1000 = e.features[0].id;
+    map.setFeatureState(
+      { source: 'grid-1000', id: hoveredCellId1000 },
+      { hover: true }
+    );
+  }
+});
+
+// Limpia el estado cuando el mouse sale de la capa
+map.on('mouseleave', 'grid-fill-1000', () => {
+  if (hoveredCellId1000 !== null) {
+    map.setFeatureState(
+      { source: 'grid-1000', id: hoveredCellId1000 },
+      { hover: false }
+    );
+  }
+  hoveredCellId1000 = null;
+});
+
+
+    // Manejo de clics en la cuadrícula para mostrar un popup
+    map.on('click', 'grid-fill-1000', (e) => {
+      const feature = e.features[0];
+      const coordinates = feature.geometry.type === 'Point'
+        ? feature.geometry.coordinates
+        : turf.center(feature).geometry.coordinates;
+
+      // Contenido del popup como tarjeta
+      const title = feature.properties.title || "Grid Cell";
+      const desc = feature.properties.description || "No description available.";
+      const img = feature.properties.image || "https://via.placeholder.com/300x150?text=Grid+Image";
+
+      const htmlContent = `
+    <div style="border-radius: 8px; overflow: hidden; box-shadow: 0 0 6px rgba(0,0,0,0.2); font-family: sans-serif; box-sizing: border-box;">
+      <div style="width: 100%; height: 150px; overflow: hidden; box-sizing: border-box;">
+        <img src="${img}" alt="Image"
+            style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;" />
+      </div>
+      <div style="padding: 10px; box-sizing: border-box;">
+        <h3 style="margin: 0 0 5px; font-size: 16px; line-height: 1.2; word-break: break-word; overflow-wrap: break-word;">${title}</h3>
+        <p style="margin: 0; color: #555; font-size: 14px; line-height: 1.5; word-break: break-word; overflow-wrap: break-word;">${desc}</p>
+      </div>
+    </div>
+`;
+
+      new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(htmlContent)
+        .addTo(map);
+    });
+
+    // 1 acre
+
+        // Agregar fuente GeoJSON para la cuadrícula de 1,000 acres
+        map.addSource('grid-1', {
+      type: 'geojson',
+      data: 'data/Grid_1acre_overlay_4326_info.geojson',
+      generateId: true
+    });
+  
+    // Verificar que el archivo esté correctamente cargado
+    fetch('data/Grid_1acre_overlay_4326_info.geojson')
+      .then(res => res.json())
+      .then(data => {
+        console.log("🔍 GeoJSON cargado con", data.features.length, "features.");
+      })
+      .catch(err => console.error("🚨 Error cargando el GeoJSON:", err));
+  
+    // Capa de relleno 1 acre
+    map.addLayer({
+      id: 'grid-fill-1',
+      type: 'fill',
+      source: 'grid-1',
+      paint: {
+        'fill-color': '#088',
+        'fill-opacity': 0.2,
+      }
+    });
+  
+    // Capa de contorno 1 acre
+    map.addLayer({
+      id: 'grid-outline-1',
+      type: 'line',
+      source: 'grid-1',
+      paint: {
+        'line-color': '#088',
+        'line-width': 0.1
+      }
+    });
+
+    let hoveredCellId1 = null;
+
+// Actualiza la capa de relleno para usar feature-state en hover 1 acre
+map.setPaintProperty('grid-fill-1', 'fill-color', [
+  'case',
+  ['boolean', ['feature-state', 'hover'], false],
+  '#ffa500', // color cuando se hace hover
+  '#088'      // color por defecto
+]);
+
+// Detecta cuando se pasa el mouse sobre una celda
+map.on('mousemove', 'grid-fill-1', (e) => {
+  if (e.features.length > 0) {
+    console.log("🖱️ Hover sobre feature id:", e.features[0].id);
+    if (hoveredCellId1 !== null) {
+      map.setFeatureState(
+        { source: 'grid-1', id: hoveredCellId1 },
+        { hover: false }
+      );
+    }
+    hoveredCellId1 = e.features[0].id;
+    map.setFeatureState(
+      { source: 'grid-1', id: hoveredCellId1 },
+      { hover: true }
+    );
+  }
+});
+
+// Limpia el estado cuando el mouse sale de la capa
+map.on('mouseleave', 'grid-fill-1', () => {
+  if (hoveredCellId1 !== null) {
+    map.setFeatureState(
+      { source: 'grid-1', id: hoveredCellId1 },
+      { hover: false }
+    );
+  }
+  hoveredCellId1 = null;
+});
+
+
+    // Manejo de clics en la cuadrícula para mostrar un popup
+    map.on('click', 'grid-fill-1', (e) => {
+      const feature = e.features[0];
+      const coordinates = feature.geometry.type === 'Point'
+        ? feature.geometry.coordinates
+        : turf.center(feature).geometry.coordinates;
+
+      // Contenido del popup como tarjeta
+      const title = feature.properties.title || "Grid Cell";
+      const desc = feature.properties.description || "No description available.";
+      const img = feature.properties.image || "https://via.placeholder.com/300x150?text=Grid+Image";
+
+      const htmlContent = `
+    <div style="border-radius: 8px; overflow: hidden; box-shadow: 0 0 6px rgba(0,0,0,0.2); font-family: sans-serif; box-sizing: border-box;">
+      <div style="width: 100%; height: 150px; overflow: hidden; box-sizing: border-box;">
+        <img src="${img}" alt="Image"
+            style="width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;" />
+      </div>
+      <div style="padding: 10px; box-sizing: border-box;">
+        <h3 style="margin: 0 0 5px; font-size: 16px; line-height: 1.2; word-break: break-word; overflow-wrap: break-word;">${title}</h3>
+        <p style="margin: 0; color: #555; font-size: 14px; line-height: 1.5; word-break: break-word; overflow-wrap: break-word;">${desc}</p>
+      </div>
+    </div>
+`;
+
+      new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(htmlContent)
+        .addTo(map);
+    });
+  
+    // Asegurar que estén arriba 1000 acres y 1 acre
+    map.moveLayer('grid-outline-1000');
+    map.moveLayer('grid-fill-1000');
+    map.moveLayer('grid-outline-1');
+    map.moveLayer('grid-fill-1');
+
+    // Inicialmente ocultar la capa de 1 acre
+    map.setLayoutProperty('grid-fill-1', 'visibility', 'none');
+    map.setLayoutProperty('grid-outline-1', 'visibility', 'none');
+
+  
+    // Panel de checkboxes -para alternar visibilidad
     const toggleableLayers = [
       { id: 'streams', layerId: 'streams' },
       { id: 'forestry-roads', layerId: 'forestry-roads' },
@@ -98,17 +335,46 @@
       { id: 'calidata-roads-ushwys', layerId: 'calidata-roads-ushwys' },
       { id: 'calidata-sections', layerId: 'calidata-sections' },
       { id: 'calidata-townships', layerId: 'calidata-townships' },
+      { id: 'grid-fill-1000', layerId: 'grid-fill-1000' },
+      { id: 'grid-fill-1', layerId: 'grid-fill-1' }
     ];
-
+  
     toggleableLayers.forEach(({ id, layerId }) => {
       const checkbox = document.getElementById(id);
-      checkbox.addEventListener('change', (e) => {
-        const visibility = e.target.checked ? 'visible' : 'none';
-        map.setLayoutProperty(layerId, 'visibility', visibility);
-      });
+      if (checkbox) {
+        checkbox.addEventListener('change', (e) => {
+          const visibility = e.target.checked ? 'visible' : 'none';
+
+          // Caso especial: controlar ambas capas para 'grid-fill'
+          if (id === 'grid-fill-1000') {
+            map.setLayoutProperty('grid-fill-1000', 'visibility', visibility);
+            map.setLayoutProperty('grid-outline-1000', 'visibility', visibility);
+
+            if (visibility === 'visible') {
+              // Apagar el otro grid
+              document.getElementById('grid-fill-1').checked = false;
+              map.setLayoutProperty('grid-fill-1', 'visibility', 'none');
+              map.setLayoutProperty('grid-outline-1', 'visibility', 'none');
+            }
+          } else if (id === 'grid-fill-1') {
+            map.setLayoutProperty('grid-fill-1', 'visibility', visibility);
+            map.setLayoutProperty('grid-outline-1', 'visibility', visibility);
+
+            if (visibility === 'visible') {
+              // Apagar el otro grid
+              document.getElementById('grid-fill-1000').checked = false;
+              map.setLayoutProperty('grid-fill-1000', 'visibility', 'none');
+              map.setLayoutProperty('grid-outline-1000', 'visibility', 'none');
+            }
+          } else {
+            // Comportamiento normal para otras capas
+            map.setLayoutProperty(layerId, 'visibility', visibility);
+          }
+        });
+      }
     });
   });
-</script>
+  </script>  
 
 </body>
 </html>
