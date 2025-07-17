@@ -302,7 +302,35 @@ map.on('mouseleave', 'grid-fill-1', () => {
     map.moveLayer('grid-outline-1');
     map.moveLayer('grid-fill-1');
 
-    // Inicialmente ocultar la capa de 1 acre
+    // Inicialmente ocultar todas las capas, excepto las de 1,000 acres y USAL Ownership
+    map.setLayoutProperty('streams', 'visibility', 'none');
+    map.setLayoutProperty('forestry-roads', 'visibility', 'none');
+    map.setLayoutProperty('gates', 'visibility', 'none');
+    map.setLayoutProperty('springs-wetareas', 'visibility', 'none');
+    map.setLayoutProperty('usal-ownership', 'visibility', 'visible');
+    map.setLayoutProperty('coho-distribution', 'visibility', 'none');
+    map.setLayoutProperty('fishbarriers', 'visibility', 'none');
+    map.setLayoutProperty('coho-range', 'visibility', 'none');
+    map.setLayoutProperty('wildlife-trees', 'visibility', 'none');
+    map.setLayoutProperty('calidata-adjacentland', 'visibility', 'none');
+    map.setLayoutProperty('calidata-buildings', 'visibility', 'none');
+    map.setLayoutProperty('calidata-ca-cities', 'visibility', 'none');
+    map.setLayoutProperty('calidata-ca-counties', 'visibility', 'none');
+    map.setLayoutProperty('calidata-quad-index', 'visibility', 'none');
+    map.setLayoutProperty('calidata-mileposts', 'visibility', 'none');
+    map.setLayoutProperty('calidata-calwater-northcoast', 'visibility', 'none');
+    map.setLayoutProperty('calidata-contour', 'visibility', 'none');
+    map.setLayoutProperty('calidata-landmarks', 'visibility', 'none');
+    map.setLayoutProperty('calidata-mendo-parcels', 'visibility', 'none');
+    map.setLayoutProperty('calidata-mendocino-county', 'visibility', 'none');
+    map.setLayoutProperty('calidata-misc-polygons', 'visibility', 'none');
+    map.setLayoutProperty('calidata-powerlines', 'visibility', 'none');
+    map.setLayoutProperty('calidata-roads-statehwys', 'visibility', 'none');
+    map.setLayoutProperty('calidata-roads-ushwys', 'visibility', 'none');
+    map.setLayoutProperty('calidata-sections', 'visibility', 'none');
+    map.setLayoutProperty('calidata-townships', 'visibility', 'none');
+    map.setLayoutProperty('grid-fill-1000', 'visibility', 'visible');
+    map.setLayoutProperty('grid-outline-1000', 'visibility', 'visible');
     map.setLayoutProperty('grid-fill-1', 'visibility', 'none');
     map.setLayoutProperty('grid-outline-1', 'visibility', 'none');
 
