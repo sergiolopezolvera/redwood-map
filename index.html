@@ -6,78 +6,134 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
   <style>
     body { margin: 0; padding: 0; }
     #map { position: absolute; top: 0; bottom: 0; width: 100%; }
-    #menu {
+
+    #panel-container {
       position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      max-width: 280px; /* Limita el ancho del panel */
+      height: 100%; /* Asegura que no ocupe más del alto de la pantalla */
+    }
+
+    #toggle-button {
+      background: #088;
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      border-radius: 0 0 5px 0;
+      z-index: 3; /* Asegúrate de que el botón esté encima del mapa */
+    }
+
+    #menu {
       background: white;
       padding: 10px;
+      max-height: 90vh;
+      overflow-y: auto;
       font-family: sans-serif;
-      z-index: 1;
       font-size: 12px;
       line-height: 1.2;
+      width: 280px;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s ease;
+      transform: translateX(0);
+    }
+
+    #panel-container.collapsed #menu {
+      transform: translateX(-100%);
+    }
+
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 1; /* Asegúrate de que el mapa esté detrás del panel */
+    }
+
+    /* Ajustes para dispositivos móviles */
+    @media (max-width: 768px) {
+      #panel-container {
+        max-width: 80%; /* Reduce el ancho del panel en móviles */
+      }
+
+      #panel-container.collapsed #menu {
+        transform: translateX(-100%);
+      }
     }
   </style>
 </head>
 <body>
 
-<div id="menu">
-  <h2>Layers</h2>
-  <h3>Forestry</h3>
-  <label><input type="checkbox" id="streams" > Streams</label><br>
-  <label><input type="checkbox" id="forestry-roads" > Roads</label><br>
-  <label><input type="checkbox" id="gates" > Gates</label><br>
-  <label><input type="checkbox" id="springs-wetareas" > Springs Wet Areas</label><br>
-  <label><input type="checkbox" id="usal-ownership" checked> USAL Ownership</label><br>
-  <h3>Biological Resources</h3>
-  <label><input type="checkbox" id="coho-distribution" > Coho Distribution</label><br>
-  <label><input type="checkbox" id="fishbarriers" > Fishbarriers</label><br>
-  <label><input type="checkbox" id="coho-range" > Coho Range</label><br>
-  <label><input type="checkbox" id="wildlife-trees" > Wildlife Trees</label><br>
-  <h3>California Data</h3>
-  <label><input type="checkbox" id="calidata-adjacentland" > Adjacent Land</label><br>
-  <label><input type="checkbox" id="calidata-buildings" > Buildings</label><br>
-  <label><input type="checkbox" id="calidata-ca-cities" > Cities</label><br>
-  <label><input type="checkbox" id="calidata-ca-counties" > Counties</label><br>
-  <label><input type="checkbox" id="calidata-quad-index" > Quad Index</label><br>
-  <label><input type="checkbox" id="calidata-mileposts" > Mileposts</label><br>
-  <label><input type="checkbox" id="calidata-calwater-northcoast" > Calwater North Coast</label><br>
-  <label><input type="checkbox" id="calidata-contour" > Contour</label><br>
-  <label><input type="checkbox" id="calidata-landmarks" > Landmarks</label><br>
-  <label><input type="checkbox" id="calidata-mendo-parcels" > Mendo Parcels</label><br>
-  <label><input type="checkbox" id="calidata-mendocino-county" > Mendocino County</label><br>
-  <label><input type="checkbox" id="calidata-misc-polygons" > Miscelaneous Polygons</label><br>
-  <label><input type="checkbox" id="calidata-powerlines" > Powerlines</label><br>
-  <label><input type="checkbox" id="calidata-roads-statehwys" > State Highways</label><br>
-  <label><input type="checkbox" id="calidata-roads-ushwys" > US Highways</label><br>
-  <label><input type="checkbox" id="calidata-sections" > Sections</label><br>
-  <label><input type="checkbox" id="calidata-townships" > Townships</label><br>
-  <h3>Grids</h3>
-  <label><input type="checkbox" id="grid-fill-1000" checked> 1,000 acres</label><br>
-  <label><input type="checkbox" id="grid-fill-1" > 1 acre</label><br>
+<!-- PANEL CON BOTÓN -->
+<div id="panel-container">
+  <button id="toggle-button">☰</button>
+  <div id="menu">
+    <h2>Layers</h2>
+    <h3>Forestry</h3>
+    <label><input type="checkbox" id="streams" > Streams</label><br>
+    <label><input type="checkbox" id="forestry-roads" > Roads</label><br>
+    <label><input type="checkbox" id="gates" > Gates</label><br>
+    <label><input type="checkbox" id="springs-wetareas" > Springs Wet Areas</label><br>
+    <label><input type="checkbox" id="usal-ownership" checked> USAL Ownership</label><br>
+    <h3>Biological Resources</h3>
+    <label><input type="checkbox" id="coho-distribution" > Coho Distribution</label><br>
+    <label><input type="checkbox" id="fishbarriers" > Fishbarriers</label><br>
+    <label><input type="checkbox" id="coho-range" > Coho Range</label><br>
+    <label><input type="checkbox" id="wildlife-trees" > Wildlife Trees</label><br>
+    <h3>California Data</h3>
+    <label><input type="checkbox" id="calidata-adjacentland" > Adjacent Land</label><br>
+    <label><input type="checkbox" id="calidata-buildings" > Buildings</label><br>
+    <label><input type="checkbox" id="calidata-ca-cities" > Cities</label><br>
+    <label><input type="checkbox" id="calidata-ca-counties" > Counties</label><br>
+    <label><input type="checkbox" id="calidata-quad-index" > Quad Index</label><br>
+    <label><input type="checkbox" id="calidata-mileposts" > Mileposts</label><br>
+    <label><input type="checkbox" id="calidata-calwater-northcoast" > Calwater North Coast</label><br>
+    <label><input type="checkbox" id="calidata-contour" > Contour</label><br>
+    <label><input type="checkbox" id="calidata-landmarks" > Landmarks</label><br>
+    <label><input type="checkbox" id="calidata-mendo-parcels" > Mendo Parcels</label><br>
+    <label><input type="checkbox" id="calidata-mendocino-county" > Mendocino County</label><br>
+    <label><input type="checkbox" id="calidata-misc-polygons" > Miscelaneous Polygons</label><br>
+    <label><input type="checkbox" id="calidata-powerlines" > Powerlines</label><br>
+    <label><input type="checkbox" id="calidata-roads-statehwys" > State Highways</label><br>
+    <label><input type="checkbox" id="calidata-roads-ushwys" > US Highways</label><br>
+    <label><input type="checkbox" id="calidata-sections" > Sections</label><br>
+    <label><input type="checkbox" id="calidata-townships" > Townships</label><br>
+    <h3>Grids</h3>
+    <label><input type="checkbox" id="grid-fill-1000" checked> 1,000 acres</label><br>
+    <label><input type="checkbox" id="grid-fill-1" > 1 acre</label><br>
 
-  <!-- Agrega más checkboxes según tus capas -->
+    <!-- Agrega más checkboxes según tus capas -->
+  </div>
 </div>
 
+<!-- MAPA -->
 <div id="map"></div>
 
-// Cargar Turf.js para operaciones geoespaciales
-<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
-
+<!-- TU SCRIPT DE MAPBOX -->
 <script>
   mapboxgl.accessToken = 'pk.eyJ1Ijoic2VyZ2lvbG9wZXpvbHZlcmEiLCJhIjoiY204Zmo5Zzd1MGRpZjJycHRzZHN5ZGc3ayJ9.esifwjfApSf4t0qkh-bZpg';
-  
+
   const map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/sergiolopezolvera/cmd50otbk01xc01s49so9d88e',
     center: [-123.8, 39.9],
     zoom: 10.5
   });
-  
+
   map.on('load', () => {
     console.log('🗺️ Mapa cargado con éxito');
-  
+
+
     // Agregar fuente GeoJSON para la cuadrícula de 1,000 acres
     map.addSource('grid-1000', {
       type: 'geojson',
@@ -401,8 +457,24 @@ map.on('mouseleave', 'grid-fill-1', () => {
         });
       }
     });
+
+    // === BOTÓN PARA OCULTAR/MOSTRAR EL PANEL ===
+    const toggleBtn = document.getElementById('toggle-button');
+    const panelContainer = document.getElementById('panel-container');
+    let isCollapsed = false;
+
+    toggleBtn.addEventListener('click', () => {
+      isCollapsed = !isCollapsed;
+      panelContainer.classList.toggle('collapsed', isCollapsed);
+    });
+
+    // Opcional: ocultar por defecto en móviles
+    if (window.innerWidth < 768) {
+      panelContainer.classList.add('collapsed');
+      isCollapsed = true; // Asegúrate de que el estado coincida
+    }
   });
-  </script>  
+</script>
 
 </body>
 </html>
